@@ -12,6 +12,10 @@ turquoiseC="\e[0;36m\033[1m"
 grayC="\e[0;37m\033[1mi"
 
 
+# limpiamos pantalla
+clear
+
+# imprimimos mensaje de lo que se podrá hacer
 echo -e "\t\t\t${redC}+----------------------------------------------------------+${endC}"
 echo -e "\t\t\t${redC}| ${endC}${greenC}Bienvenido al script para trabajar rapido con${endC}            ${redC}|${endC}"
 echo -e "\t\t\t${redC}| ${endC}${greenC}una interfaz, de esta manera podrás activar y desactivar${endC} ${redC}|${endC}"
@@ -19,7 +23,7 @@ echo -e "\t\t\t${redC}| ${endC}${greenC}rapidamente el modo monitor${endC}      
 echo -e "\t\t\t${redC}+----------------------------------------------------------+${endC}"
 printf "\n\n\n"
 
-CONTINUE=true
+# iniciamos un bucle hasta obtener una respuesta correcta.
 
 while true; do
 	result=$(ifconfig | grep  flags | cut -d ' ' -f1 | tr -d ':')
@@ -30,8 +34,9 @@ while true; do
 		let VAR+=1
 	done
 
-	printf "${blueC}Seleccione una interfaz para trabajar: ${endC}"
+	printf "${blueC}Seleccione una interfaz para trabajar:${endC} ${yellowC}"
 	read opcion
+	printf "${endC}"
 	let VAR-=1
 
 	if (( $opcion <= $VAR )) && (( $opcion >= 1)); then
@@ -41,14 +46,20 @@ while true; do
 	printf "\n\n\n${redC}Seleccione un opción valida...{endC}\n\n\n"
 done
 
-
+# si salió la respuesta es correcta ahora seleccionaremos que hacer con la placa.
 
 printf "\n\n\t${blueC}Seleccione una opción a realizar con la placa${endC} ${yellowC}$placa${endC}\n"
 printf "\t\t\t${redC}[${endC}${yellowC}1${endC}${redC}]${endC} ${yellowC}  Levantar en modo monitor${endC}\n"
 printf "\t\t\t${redC}[${endC}${yellowC}2${endC}${redC}]${endC} ${yellowC}  Dar de  baja Modo Monitor${endC}\n"
 printf "\t\t\t${redC}[${endC}${yellowC}3${endC}${redC}]${endC} ${yellowC}  Salir con el portapapeles${endC}\n"
-printf "\t\t\t--> "
+printf "\t\t\t${redC}[${endC}${yellowC}4${endC}${redC}]${endC} ${yellowC}  Modificar la MAC${endC}\n"
+printf "\t\t\t${redC}[${endC}${yellowC}5${endC}${redC}]${endC} ${yellowC}  Restaurar la MAC${endC}\n"
+printf "\t\t\t${blueC}--> "
 read eleccion
+printf "${endC}"
+
+# controlamos la opción seleccionada
+
 if (( $eleccion == 1 )); then	
 	sudo airmon-ng start $placa
 fi
@@ -57,4 +68,14 @@ if (( $eleccion == 2 )); then
 fi
 if (( $eleccion == 3 )); then
 	printf $placa | xclip -selection clipboard -i
+fi
+if (( $eleccion == 4 ));  then
+	sudo ifconfig $placa down
+	sudo macchanger -r $placa
+	sudo ifconfig $placa up
+fi
+if (( $eleccion == 5 )); then
+	sudo ifconfig $placa down
+	sudo macchanger -p $placa
+	sudo ifconfig $placa up
 fi
