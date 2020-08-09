@@ -43,10 +43,10 @@ done
 
 
 
-printf "\n\n\tSeleccione una opción a realizar con la placa $placa:\n"
-printf "\t\t\t[1]. Levantar en modo monitor\n"
-printf "\t\t\t[2]. Dar de  baja Modo Monitor\n"
-printf "\t\t\t[3]. Salir con el portapapeles\n"
+printf "\n\n\t${blueC}Seleccione una opción a realizar con la placa${endC} ${yellowC}$placa${endC}\n"
+printf "\t\t\t${redC}[${endC}${yellowC}1${endC}${redC}]${endC} ${yellowC}  Levantar en modo monitor${endC}\n"
+printf "\t\t\t${redC}[${endC}${yellowC}2${endC}${redC}]${endC} ${yellowC}  Dar de  baja Modo Monitor${endC}\n"
+printf "\t\t\t${redC}[${endC}${yellowC}3${endC}${redC}]${endC} ${yellowC}  Salir con el portapapeles${endC}\n"
 printf "\t\t\t--> "
 read eleccion
 if (( $eleccion == 1 )); then	
