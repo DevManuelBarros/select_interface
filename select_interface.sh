@@ -11,6 +11,21 @@ purpleC="\e[0;35m\033[1m"
 turquoiseC="\e[0;36m\033[1m"
 grayC="\e[0;37m\033[1mi"
 
+##############################################################
+#  Funciones.
+##############################################################
+
+function change_mac {
+	
+	args
+        :@required opcion
+	
+	sudo ifconfig $placa down
+	sudo macchanger $opcion $placa
+	sudo ifconfig $placa up
+
+}
+
 
 # limpiamos pantalla
 clear
@@ -70,12 +85,8 @@ if (( $eleccion == 3 )); then
 	printf $placa | xclip -selection clipboard -i
 fi
 if (( $eleccion == 4 ));  then
-	sudo ifconfig $placa down
-	sudo macchanger -r $placa
-	sudo ifconfig $placa up
+	change_mac -r
 fi
 if (( $eleccion == 5 )); then
-	sudo ifconfig $placa down
-	sudo macchanger -p $placa
-	sudo ifconfig $placa up
+	change_mac -p
 fi
