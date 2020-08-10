@@ -16,19 +16,31 @@ grayC="\e[0;37m\033[1mi"
 ##############################################################
 
 function change_mac {
-	
-	args
-        :@required opcion
-	
-	sudo ifconfig $placa down
-	sudo macchanger $opcion $placa
-	sudo ifconfig $placa up
+	sudo ifconfig $1 down
+	sudo macchanger $2 $1
+	sudo ifconfig $1 up
+}
 
+function control_program {
+
+	ruta=$(which $1)
+	if [ "$ruta" == "" ]; then
+		echo -e "${redC}[${greenC}*${endC}${redC}]${endC}Vamos a intentar instalar $1\n"
+		sudo apt-get install $1 -y
+	else
+		echo -e "${blueC}[${greenC}*${endC}${blueC}]${endC}Existe $1\n"
+	fi	
 }
 
 
-# limpiamos pantalla
+# Limpiamos pantalla
 clear
+
+# Comprobamos dependencias.
+
+echo -e "${yellowC}[${purpleC}*${endC}${yellowC}]${endC} Comprobamos si estan las dependencias $1\n\n"
+control_program xclip
+
 
 # imprimimos mensaje de lo que se podrá hacer
 echo -e "\t\t\t${redC}+----------------------------------------------------------+${endC}"
@@ -62,31 +74,40 @@ while true; do
 done
 
 # si salió la respuesta es correcta ahora seleccionaremos que hacer con la placa.
+while true; do
 
-printf "\n\n\t${blueC}Seleccione una opción a realizar con la placa${endC} ${yellowC}$placa${endC}\n"
-printf "\t\t\t${redC}[${endC}${yellowC}1${endC}${redC}]${endC} ${yellowC}  Levantar en modo monitor${endC}\n"
-printf "\t\t\t${redC}[${endC}${yellowC}2${endC}${redC}]${endC} ${yellowC}  Dar de  baja Modo Monitor${endC}\n"
-printf "\t\t\t${redC}[${endC}${yellowC}3${endC}${redC}]${endC} ${yellowC}  Salir con el portapapeles${endC}\n"
-printf "\t\t\t${redC}[${endC}${yellowC}4${endC}${redC}]${endC} ${yellowC}  Modificar la MAC${endC}\n"
-printf "\t\t\t${redC}[${endC}${yellowC}5${endC}${redC}]${endC} ${yellowC}  Restaurar la MAC${endC}\n"
-printf "\t\t\t${blueC}--> "
-read eleccion
-printf "${endC}"
+	printf "\n\n\t${blueC}Seleccione una opción a realizar con la placa${endC} ${yellowC}$placa${endC}\n"
+	printf "\t\t\t${redC}[${endC}${yellowC}1${endC}${redC}]${endC} ${yellowC}  Levantar en modo monitor${endC}\n"
+	printf "\t\t\t${redC}[${endC}${yellowC}2${endC}${redC}]${endC} ${yellowC}  Dar de  baja Modo Monitor${endC}\n"
+	printf "\t\t\t${redC}[${endC}${yellowC}3${endC}${redC}]${endC} ${yellowC}  Salir con el portapapeles${endC}\n"
+	printf "\t\t\t${redC}[${endC}${yellowC}4${endC}${redC}]${endC} ${yellowC}  Modificar la MAC${endC}\n"
+	printf "\t\t\t${redC}[${endC}${yellowC}5${endC}${redC}]${endC} ${yellowC}  Restaurar la MAC${endC}\n"
+	
+	printf "\t\t\t${blueC}--> "
+	read eleccion
+	printf "${endC}"
 
-# controlamos la opción seleccionada
+	# controlamos la opción seleccionada
 
-if (( $eleccion == 1 )); then	
-	sudo airmon-ng start $placa
-fi
-if (( $eleccion == 2 )); then
-	sudo airmon-ng stop $placa
-fi
-if (( $eleccion == 3 )); then
-	printf $placa | xclip -selection clipboard -i
-fi
-if (( $eleccion == 4 ));  then
-	change_mac -r
-fi
-if (( $eleccion == 5 )); then
-	change_mac -p
-fi
+	if (( $eleccion == 1 )); then	
+		sudo airmon-ng start $placa
+		break
+	fi
+	if (( $eleccion == 2 )); then
+		sudo airmon-ng stop $placa
+		break
+	fi
+	if (( $eleccion == 3 )); then
+		printf $placa | xclip -selection clipboard -i
+		break
+	fi
+	if (( $eleccion == 4 ));  then
+		change_mac $placa -r
+		break
+	fi
+	if (( $eleccion == 5 )); then
+		change_mac $placa -p
+		break
+	fi
+        printf "\n${redC} DEBE SELECCIONAR UNA OPCIÓN VALIDA\n"
+done
